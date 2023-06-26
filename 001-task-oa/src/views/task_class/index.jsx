@@ -47,7 +47,7 @@ export default class Task extends React.Component {
       dataIndex: "status",
       align: "center",
       width: "10%",
-      render: (status) => (status === 1 ? "已完未" : "已完成"),
+      render: (status) => (status === 1 ? "未完成" : "已完成"),
     },
     {
       title: "完成时间",
