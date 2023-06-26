@@ -14,7 +14,6 @@ export default function createForm(Component) {
 
     getFieldDecorator = (field, option) => (InputCmp) => {
       this.options[field] = option;
-      console.log("getFieldDecorator:", this.state, field);
       return React.cloneElement(InputCmp, {
         name: field,
         value: this.state[field] || "",
@@ -34,7 +33,7 @@ export default function createForm(Component) {
       const err = [];
 
       // 校验
-      for (let field in this.options) {
+      for (const field in this.options) {
         if (this.state[field] === undefined) {
           err.push({ [field]: "error" });
         }
@@ -58,7 +57,6 @@ export default function createForm(Component) {
       };
     };
     render() {
-      console.log("init");
       return <Component {...this.props} {...this.getForm()} />;
     }
   };
