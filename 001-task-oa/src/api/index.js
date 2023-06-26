@@ -9,9 +9,13 @@ export function getTaskList(status) {
 }
 
 export function deleteTask(id) {
-  return mockApi(id);
+  return mockApi("ok");
 }
 
 export function completeTask(id) {
-  return mockApi(id);
+  return mockApi("ok");
+}
+
+export function addTask(task, time) {
+  return mockApi("ok");
 }

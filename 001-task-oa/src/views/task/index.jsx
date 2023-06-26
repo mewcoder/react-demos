@@ -1,15 +1,32 @@
 import React from "react";
-import { Button, Radio, Table, Popconfirm, message } from "antd";
+import {
+  Button,
+  Radio,
+  Table,
+  Popconfirm,
+  message,
+  Modal,
+  Form,
+  Input,
+  DatePicker,
+} from "antd";
 import "./index.less";
-import { getTaskList, deleteTask, completeTask } from "../../api";
+import { getTaskList, deleteTask, completeTask, addTask } from "../../api";
 import { formatTime } from "../../utils";
 
 export default class Task extends React.Component {
+  constructor() {
+    super();
+    this.formRef = React.createRef();
+  }
+
   // 数据
   state = {
     dataList: [],
-    loading: false,
     currentStatus: "",
+    tableLoading: false,
+    confirmLoading: false,
+    modalShow: false,
   };
 
   columns = [
@@ -70,7 +87,7 @@ export default class Task extends React.Component {
 
   queryData = async (status) => {
     try {
-      this.setState({ loading: true });
+      this.setState({ tableLoading: true });
       const { code, data } = await getTaskList(status);
       if (code === "0") {
         this.setState({
@@ -80,7 +97,7 @@ export default class Task extends React.Component {
     } catch {
       /* empty */
     }
-    this.setState({ loading: false });
+    this.setState({ tableLoading: false });
   };
 
   handleFilter = (e) => {
@@ -94,7 +111,7 @@ export default class Task extends React.Component {
 
   handleDelete = async (id) => {
     try {
-      this.setState({ loading: true });
+      this.setState({ tableLoading: true });
       const { code } = await deleteTask(id);
       if (code === "0") {
         this.queryData();
@@ -109,7 +126,7 @@ export default class Task extends React.Component {
 
   handleComplete = async (id) => {
     try {
-      this.setState({ loading: true });
+      this.setState({ tableLoading: true });
       const { code } = await completeTask(id);
       if (code === "0") {
         this.queryData();
@@ -127,15 +144,46 @@ export default class Task extends React.Component {
     this.queryData();
   }
 
+  handleOpenModal = () => {
+    this.setState({ modalShow: true });
+  };
+
+  handleSave = async () => {
+    try {
+      await this.formRef.current.validateFields();
+      let { task, time } = this.formRef.current.getFieldsValue();
+      time = time.format("YYYY-MM-DD HH:mm:ss");
+      this.setState({ confirmLoading: true });
+      console.log("submit:", task, time);
+      const { code } = await addTask(task, time);
+      if (code === "0") {
+        this.handleCloseModal();
+        this.queryData();
+        message.success("添加成功");
+      } else {
+        message.error("添加失败");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+    this.setState({ confirmLoading: false });
+  };
+
+  handleCloseModal = () => {
+    this.setState({ modalShow: false });
+  };
+
   render() {
-    const { dataList, loading } = this.state;
+    const { dataList, tableLoading, modalShow, confirmLoading } = this.state;
 
     return (
       <div className="container">
         <header className="header">
           <div className="title">
             <h2 className="title__text">TASK OA 任务管理系统</h2>
-            <Button type="primary">新增任务</Button>
+            <Button type="primary" onClick={this.handleOpenModal}>
+              新增任务
+            </Button>
           </div>
 
           {/* 筛选 */}
@@ -157,11 +205,49 @@ export default class Task extends React.Component {
           <Table
             dataSource={dataList}
             columns={this.columns}
-            loading={loading}
+            tableLoading={tableLoading}
             pagination={false}
             rowKey="id"
           />
         </main>
+
+        {/* 弹窗 */}
+        <Modal
+          title="新增任务"
+          open={modalShow}
+          confirmLoading={confirmLoading}
+          keyboard={false}
+          maskClosable={false}
+          okText="提交"
+          onCancel={this.handleCloseModal}
+          onOk={this.handleSave}
+        >
+          <Form
+            ref={this.formRef}
+            layout="vertical"
+            initialValues={{ task: "", time: "" }}
+          >
+            <Form.Item
+              label="任务描述"
+              name="task"
+              validateTrigger="onBlur"
+              rules={[
+                { required: true, message: "任务描述是必填项" },
+                { min: 6, message: "输入的内容至少6位及以上" },
+              ]}
+            >
+              <Input.TextArea rows={4}></Input.TextArea>
+            </Form.Item>
+            <Form.Item
+              label="预期完成时间"
+              name="time"
+              validateTrigger="onBlur"
+              rules={[{ required: true, message: "预期完成时间是必填项" }]}
+            >
+              <DatePicker showTime />
+            </Form.Item>
+          </Form>
+        </Modal>
       </div>
     );
   }
