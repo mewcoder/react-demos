@@ -11,8 +11,8 @@ import {
   DatePicker,
 } from "antd";
 import "./index.less";
-import { getTaskList, deleteTask, completeTask, addTask } from "../../api";
-import { formatTime } from "../../utils";
+import { getTaskList, deleteTask, completeTask, addTask } from "@/api";
+import { formatTime } from "@/utils";
 
 export default class Task extends React.Component {
   constructor() {
