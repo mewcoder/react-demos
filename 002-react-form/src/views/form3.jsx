@@ -9,18 +9,19 @@ export default class RCFieldForm extends React.Component {
   formRef = React.createRef();
 
   componentDidMount() {
-    console.log("form", this.formRef.current); //sy-log
+    console.log("form", this.formRef.current);
     this.formRef.current.setFieldsValue({ username: "default" });
   }
 
   onFinish = (val) => {
-    console.log("onFinish", val); //sy-log
+    console.log("onFinish", val);
   };
 
   // 表单校验失败执行
   onFinishFailed = (val) => {
-    console.log("onFinishFailed", val); //sy-log
+    console.log("onFinishFailed", val);
   };
+
   render() {
     return (
       <div>

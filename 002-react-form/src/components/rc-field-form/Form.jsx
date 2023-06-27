@@ -4,7 +4,7 @@ import useForm from "./useForm";
 
 export default function Form(props, ref) {
   const { children, form, onFinish, onFinishFailed } = props;
-  debugger
+
   const [formInstance] = useForm(form);
 
   useImperativeHandle(ref, () => formInstance);

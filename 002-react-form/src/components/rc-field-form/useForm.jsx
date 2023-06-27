@@ -6,7 +6,6 @@ class FormStore {
   constructor() {
     this.store = {}; // 状态值： name: value
     this.fieldEntities = [];
-
     this.callbacks = {};
   }
 
@@ -19,7 +18,6 @@ class FormStore {
   // 订阅与取消订阅
   registerFieldEntities = (entity) => {
     this.fieldEntities.push(entity);
-
     return () => {
       this.fieldEntities = this.fieldEntities.filter((item) => item !== entity);
       delete this.store[entity.props.name];
@@ -53,15 +51,13 @@ class FormStore {
   };
 
   validate = () => {
-    let err = [];
-    // todo 校验
+    const err = [];
     // 简版校验
-
     this.fieldEntities.forEach((entity) => {
       const { name, rules } = entity.props;
 
       const value = this.getFieldValue(name);
-      let rule = rules[0];
+      const rule = rules[0];
 
       if (rule && rule.required && (value === undefined || value === "")) {
         err.push({ [name]: rule.message, value });
@@ -72,9 +68,7 @@ class FormStore {
   };
 
   submit = () => {
-    console.log("submit"); //sy-log
-
-    let err = this.validate();
+    const err = this.validate();
     // 提交
     const { onFinish, onFinishFailed } = this.callbacks;
 
@@ -104,9 +98,11 @@ export default function useForm(form) {
   const formRef = useRef();
 
   if (!formRef.current) {
+    // hooks使用
     if (form) {
       formRef.current = form;
     } else {
+      // class 使用
       const formStore = new FormStore();
       formRef.current = formStore.getForm();
     }

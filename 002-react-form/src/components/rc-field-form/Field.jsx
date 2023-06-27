@@ -19,11 +19,10 @@ export default function Field(props) {
 
   const getControlled = () => {
     return {
-      value: getFieldValue(name) || "", //"omg", // get state
+      value: getFieldValue(name) || "", // get state
       onChange: (e) => {
         const newValue = e.target.value;
-        // set state
-        setFieldsValue({ [name]: newValue });
+        setFieldsValue({ [name]: newValue }); // set state
       },
     };
   };
