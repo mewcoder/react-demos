@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+  <script>
+    class ClassDemo {
+      static staticProperty = "someValue";
+      static staticMethod() {
+        return "static method has been called.";
+      }
+      constructor(name) {
+        this.name = name;
+      }
+      // 公有实例属性和方法
+      // 定义的是实例上的属性 相当于在constructor里定义this.xxx
+      instanceField = "instance field";
+      // 定义的是原型对象上的方法
+      hello() {
+        console.log(this);
+      }
+      // 相当于在constructor里定义this.xxx
+      world = () => {
+        console.log(this); // 类的示例
+      };
+    }
+
+    const s = new ClassDemo()
+
+    console.log(s.world())
+
+  </script>
+
+</body>
+
+</html>
